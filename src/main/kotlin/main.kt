@@ -1,11 +1,14 @@
+sealed class Attachment(val type: String)
+
 data class Post(
     val id: Int,
     val authorId: Int,
     val authorName: String,
     val content: String,
     val published: Long,
-    val likes: Likes,
-    val comments: Comments
+    val likes: Likes?,
+    val comments: Comments?,
+    val attachments: List<Attachment>?
 )
 
 data class Likes(
@@ -22,6 +25,51 @@ data class Comments(
     val can_close: Boolean,
     val can_open: Boolean
 )
+
+data class Photo(
+    val id: Int,
+    val userId: Int,
+    val ownerId: Int,
+    val date: Long
+)
+
+data class Video(
+    val id: Int,
+    val ownerId: Int,
+    val title: String,
+    val duration: Int
+)
+
+data class Audio(
+    val id: Int,
+    val ownerId: Int,
+    val artist: String,
+    val title: String
+)
+
+data class File(
+    val id: Int,
+    val ownerId: Int,
+    val title: String,
+    val size: Int
+)
+
+data class History(
+    val id: Int,
+    val title: String,
+    val expiresAt: Long,
+    val isExpired: Boolean
+)
+
+data class VideoAttachment(val video: Video): Attachment("Video")
+
+data class PhotoAttachment(val photo: Photo): Attachment("Photo")
+
+data class AudioAttachment(val audio: Audio): Attachment("Audio")
+
+data class FileAttachment(val file: File): Attachment("File")
+
+data class HistoryAttachment(val history: History): Attachment("History")
 
 object WallService {
     private var posts = emptyArray<Post>()
@@ -66,6 +114,12 @@ object WallService {
             can_like = true,
             can_publish = true
         ),
-        published = 2019)
+        published = 2019,
+        attachments = listOf(
+                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))))
     println(WallService.add(post))
 }*/
