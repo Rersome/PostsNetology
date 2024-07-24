@@ -4,7 +4,7 @@ import kotlin.test.assertEquals
 
 class WallServiceTest {
     @Before
-    fun cleareBeforeTest() {
+    fun clearBeforeTest() {
         WallService.clear()
     }
 
@@ -15,12 +15,13 @@ class WallServiceTest {
             authorId = 2,
             authorName = "John Doe",
             content = "Test",
-            comments = Comments(
-                count = 1,
+            comments = Comment(
+                id = 1,
                 can_post = true,
                 gropus_can_post = false,
                 can_close = false,
-                can_open = false),
+                can_open = false
+            ),
             likes = Likes(
                 count = 1,
                 user_likes = true,
@@ -33,7 +34,9 @@ class WallServiceTest {
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
                 FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
                 AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
-                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))))
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
         val addedPost = WallService.add(post)
 
         assertEquals(addedPost.id, 1)
@@ -46,12 +49,13 @@ class WallServiceTest {
             authorId = 2,
             authorName = "John Doe",
             content = "Test",
-            comments = Comments(
-                count = 1,
+            comments = Comment(
+                id = 1,
                 can_post = true,
                 gropus_can_post = false,
                 can_close = false,
-                can_open = false),
+                can_open = false
+            ),
             likes = Likes(
                 count = 1,
                 user_likes = true,
@@ -64,7 +68,9 @@ class WallServiceTest {
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
                 FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
                 AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
-                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))))
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
 
         WallService.add(post)
         val addedPost = post.copy(authorName = "Test name")
@@ -79,12 +85,13 @@ class WallServiceTest {
             authorId = 2,
             authorName = "John Doe",
             content = "Test",
-            comments = Comments(
-                count = 1,
+            comments = Comment(
+                id = 1,
                 can_post = true,
                 gropus_can_post = false,
                 can_close = false,
-                can_open = false),
+                can_open = false
+            ),
             likes = Likes(
                 count = 1,
                 user_likes = true,
@@ -97,11 +104,270 @@ class WallServiceTest {
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
                 FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
                 AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
-                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123)))
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
         )
 
         val addedPost = post.copy(authorName = "Test name")
 
         assertEquals(WallService.update(addedPost), false)
+    }
+
+    @Test(expected = PostNotFoundException::class)
+    fun addCommentToNotExistingPost() {
+        val post = Post(
+            id = 1,
+            authorId = 2,
+            authorName = "John Doe",
+            content = "Test",
+            comments = Comment(
+                id = 1,
+                can_post = true,
+                gropus_can_post = false,
+                can_close = false,
+                can_open = false
+            ),
+            likes = Likes(
+                count = 1,
+                user_likes = true,
+                can_like = true,
+                can_publish = true
+            ),
+            published = 2019,
+            attachments = listOf(
+                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
+
+        val id = 2
+        val newComment = Comment(
+            id = 1,
+            can_post = true,
+            gropus_can_post = false,
+            can_close = false,
+            can_open = false
+        )
+        WallService.add(post)
+        WallService.createComment(id, newComment)
+    }
+
+    @Test
+    fun addCommentToExistingPost() {
+        val post = Post(
+            id = 1,
+            authorId = 2,
+            authorName = "John Doe",
+            content = "Test",
+            comments = Comment(
+                id = 1,
+                can_post = true,
+                gropus_can_post = false,
+                can_close = false,
+                can_open = false
+            ),
+            likes = Likes(
+                count = 1,
+                user_likes = true,
+                can_like = true,
+                can_publish = true
+            ),
+            published = 2019,
+            attachments = listOf(
+                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
+
+        val id = 1
+        val newComment = Comment(
+            id = 1,
+            can_post = true,
+            gropus_can_post = false,
+            can_close = false,
+            can_open = false
+        )
+        WallService.add(post)
+        WallService.createComment(id, newComment)
+    }
+
+    @Test(expected = PostNotFoundException::class)
+    fun notValidReportByPost() {
+        val post = Post(
+            id = 1,
+            authorId = 2,
+            authorName = "John Doe",
+            content = "Test",
+            comments = Comment(
+                id = 1,
+                can_post = true,
+                gropus_can_post = false,
+                can_close = false,
+                can_open = false
+            ),
+            likes = Likes(
+                count = 1,
+                user_likes = true,
+                can_like = true,
+                can_publish = true
+            ),
+            published = 2019,
+            attachments = listOf(
+                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
+
+        val postId = 1
+        val newComment = Comment(
+            id = 1,
+            can_post = true,
+            gropus_can_post = false,
+            can_close = false,
+            can_open = false
+        )
+        WallService.add(post)
+        WallService.createComment(postId, newComment)
+        WallService.reportComment(2, newComment, 8)
+    }
+
+    @Test
+    fun notValidReportByReason() {
+        val post = Post(
+            id = 1,
+            authorId = 2,
+            authorName = "John Doe",
+            content = "Test",
+            comments = Comment(
+                id = 1,
+                can_post = true,
+                gropus_can_post = false,
+                can_close = false,
+                can_open = false
+            ),
+            likes = Likes(
+                count = 1,
+                user_likes = true,
+                can_like = true,
+                can_publish = true
+            ),
+            published = 2019,
+            attachments = listOf(
+                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
+
+        val postId = 1
+        val commentId = 1
+        val newComment = Comment(
+            id = 1,
+            can_post = true,
+            gropus_can_post = false,
+            can_close = false,
+            can_open = false
+        )
+        WallService.add(post)
+        WallService.createComment(commentId, newComment)
+
+        assertEquals(WallService.reportComment(postId, newComment, 9), false)
+    }
+
+    @Test(expected = CommentNotFoundException::class)
+    fun notValidReportByComment() {
+        val post = Post(
+            id = 1,
+            authorId = 2,
+            authorName = "John Doe",
+            content = "Test",
+            comments = Comment(
+                id = 1,
+                can_post = true,
+                gropus_can_post = false,
+                can_close = false,
+                can_open = false
+            ),
+            likes = Likes(
+                count = 1,
+                user_likes = true,
+                can_like = true,
+                can_publish = true
+            ),
+            published = 2019,
+            attachments = listOf(
+                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
+
+        val commentId = 1
+        val newComment = Comment(
+            id = 2,
+            can_post = true,
+            gropus_can_post = false,
+            can_close = false,
+            can_open = false
+        )
+        WallService.add(post)
+        WallService.reportComment(commentId, newComment, 8)
+    }
+
+    @Test
+    fun validReportByComment() {
+        val post = Post(
+            id = 1,
+            authorId = 2,
+            authorName = "John Doe",
+            content = "Test",
+            comments = Comment(
+                id = 1,
+                can_post = true,
+                gropus_can_post = false,
+                can_close = false,
+                can_open = false
+            ),
+            likes = Likes(
+                count = 1,
+                user_likes = true,
+                can_like = true,
+                can_publish = true
+            ),
+            published = 2019,
+            attachments = listOf(
+                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+            )
+        )
+
+        val postId = 1
+        val commentId = 1
+        val newComment = Comment(
+            id = 1,
+            can_post = true,
+            gropus_can_post = false,
+            can_close = false,
+            can_open = false
+        )
+        WallService.add(post)
+        WallService.createComment(postId, newComment)
+        assertEquals(WallService.reportComment(commentId, newComment, 8), true)
     }
 }

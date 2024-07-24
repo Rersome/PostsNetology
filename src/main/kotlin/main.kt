@@ -1,3 +1,5 @@
+import WallService.createComment
+
 sealed class Attachment(val type: String)
 
 data class Post(
@@ -7,7 +9,7 @@ data class Post(
     val content: String,
     val published: Long,
     val likes: Likes?,
-    val comments: Comments?,
+    val comments: Comment?,
     val attachments: List<Attachment>?
 )
 
@@ -18,8 +20,14 @@ data class Likes(
     val can_publish: Boolean
 )
 
-data class Comments(
-    val count: Long,
+data class Report(
+    val postId: Int,
+    val comment: Comment?,
+    val reason: Int,
+)
+
+data class Comment(
+    val id: Int,
     val can_post: Boolean,
     val gropus_can_post: Boolean,
     val can_close: Boolean,
@@ -27,35 +35,35 @@ data class Comments(
 )
 
 data class Photo(
-    val id: Int,
+    val id: Long,
     val userId: Int,
     val ownerId: Int,
     val date: Long
 )
 
 data class Video(
-    val id: Int,
+    val id: Long,
     val ownerId: Int,
     val title: String,
     val duration: Int
 )
 
 data class Audio(
-    val id: Int,
+    val id: Long,
     val ownerId: Int,
     val artist: String,
     val title: String
 )
 
 data class File(
-    val id: Int,
+    val id: Long,
     val ownerId: Int,
     val title: String,
     val size: Int
 )
 
 data class History(
-    val id: Int,
+    val id: Long,
     val title: String,
     val expiresAt: Long,
     val isExpired: Boolean
@@ -71,8 +79,14 @@ data class FileAttachment(val file: File): Attachment("File")
 
 data class HistoryAttachment(val history: History): Attachment("History")
 
+class PostNotFoundException(message: String) : Exception(message)
+
+class CommentNotFoundException(message: String) : Exception(message)
+
 object WallService {
     private var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
+    private var reports = emptyArray<Report>()
     private var nextPostId = 1
 
     fun add(post: Post): Post {
@@ -90,20 +104,50 @@ object WallService {
         }
         return false
     }
+    // Реализация очень странная, я так думаю, но ничего умнее не пришло в голову (ДОРАБОТАТЬ)
+    fun createComment(postId: Int, comment: Comment): Comment {
+        for (tempPost in posts) {
+            if (tempPost.id != postId) {
+                throw PostNotFoundException("Поста с айди $postId не существует")
+            } else {
+                val newComment = comment.copy(id = nextPostId++)
+                comments += newComment
+            }
+        }
+        return comment
+    }
+
+    fun reportComment(postId: Int, comment: Comment, reason: Int): Boolean {
+        if (reason !in 0..8) {
+            return false
+        }
+        for (tempPost in posts) {
+            if (tempPost.id == postId) {
+                if (tempPost.comments != null && tempPost.comments.id == comment.id) {
+                    val newReport = Report(postId, comment, reason)
+                    reports += newReport
+                    return true
+                } else {
+                    throw CommentNotFoundException("Комментария с айди ${comment.id} не существует в посте с айди $postId")
+                }
+            }
+        }
+        throw PostNotFoundException("Поста с айди $postId не существует")
+    }
 
     fun clear() {
         posts = emptyArray<Post>()
         nextPostId = 1
     }
 }
-/*fun main() {
-    val post = Post(
+fun main() {
+    /*val post = Post(
         id = 1,
         authorId = 2,
         authorName = "John Doe",
         content = "Test",
-        comments = Comments(
-            count = 1,
+        comments = Comment(
+            id = 1,
             can_post = true,
             gropus_can_post = false,
             can_close = false,
@@ -121,5 +165,16 @@ object WallService {
                 FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
                 AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
                 HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))))
-    println(WallService.add(post))
-}*/
+
+    val id = 1
+    var newComment = Comment(
+        id = 1,
+        can_post = true,
+        gropus_can_post = false,
+        can_close = false,
+        can_open = false
+        )
+    WallService.add(post)
+    WallService.createComment(id, newComment)
+    WallService.reportComment(1, newComment, 8)*/
+}
