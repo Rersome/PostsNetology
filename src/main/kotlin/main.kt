@@ -1,23 +1,21 @@
-import WallService.createComment
-
 sealed class Attachment(val type: String)
 
 data class Post(
-    val id: Int,
-    val authorId: Int,
-    val authorName: String,
-    val content: String,
-    val published: Long,
-    val likes: Likes?,
-    val comments: Comment?,
+    val id: Int = 1,
+    val authorId: Int = 2,
+    val authorName: String = "John Doe",
+    val content: String = "Test",
+    val published: Long = 2019,
+    val likes: Likes? = Likes(),
+    val comments: Comment? = Comment(),
     val attachments: List<Attachment>?
 )
 
 data class Likes(
-    val count: Long,
-    val user_likes: Boolean,
-    val can_like: Boolean,
-    val can_publish: Boolean
+    val count: Long = 1,
+    val user_likes: Boolean = true,
+    val can_like: Boolean = true,
+    val can_publish: Boolean = true
 )
 
 data class Report(
@@ -27,46 +25,46 @@ data class Report(
 )
 
 data class Comment(
-    val id: Int,
-    val can_post: Boolean,
-    val gropus_can_post: Boolean,
-    val can_close: Boolean,
-    val can_open: Boolean
+    val id: Int = 1,
+    val can_post: Boolean = true,
+    val gropus_can_post: Boolean = false,
+    val can_close: Boolean = false,
+    val can_open: Boolean = false
 )
 
 data class Photo(
-    val id: Long,
-    val userId: Int,
-    val ownerId: Int,
-    val date: Long
+    val id: Long = 1,
+    val userId: Int = 1,
+    val ownerId: Int = 1,
+    val date: Long = 1206
 )
 
 data class Video(
-    val id: Long,
-    val ownerId: Int,
-    val title: String,
-    val duration: Int
+    val id: Long = 1,
+    val ownerId: Int = 1,
+    val title: String = "TestVideo",
+    val duration: Int = 323
 )
 
 data class Audio(
-    val id: Long,
-    val ownerId: Int,
-    val artist: String,
-    val title: String
+    val id: Long = 1,
+    val ownerId: Int = 1,
+    val artist: String = "TestArtist",
+    val title: String = "TestAlbum"
 )
 
 data class File(
-    val id: Long,
-    val ownerId: Int,
-    val title: String,
-    val size: Int
+    val id: Long = 1,
+    val ownerId: Int = 1,
+    val title: String = "TestFile",
+    val size: Int = 100
 )
 
 data class History(
-    val id: Long,
-    val title: String,
-    val expiresAt: Long,
-    val isExpired: Boolean
+    val id: Long = 1,
+    val title: String = "TestHistory",
+    val expiresAt: Long = 123,
+    val isExpired: Boolean = false
 )
 
 data class VideoAttachment(val video: Video): Attachment("Video")
@@ -81,13 +79,12 @@ data class HistoryAttachment(val history: History): Attachment("History")
 
 class PostNotFoundException(message: String) : Exception(message)
 
-class CommentNotFoundException(message: String) : Exception(message)
-
 object WallService {
     private var posts = emptyArray<Post>()
     private var comments = emptyArray<Comment>()
     private var reports = emptyArray<Report>()
     private var nextPostId = 1
+    private var nextCommentId = 1
 
     fun add(post: Post): Post {
         val newPost = post.copy(id = nextPostId++)
@@ -106,12 +103,17 @@ object WallService {
     }
     // Реализация очень странная, я так думаю, но ничего умнее не пришло в голову (ДОРАБОТАТЬ)
     fun createComment(postId: Int, comment: Comment): Comment {
+        var postFound = false
+
         for (tempPost in posts) {
-            if (tempPost.id != postId) {
-                throw PostNotFoundException("Поста с айди $postId не существует")
-            } else {
-                val newComment = comment.copy(id = nextPostId++)
+            if (tempPost.id == postId) {
+                postFound = true
+                val newComment = comment.copy(id = nextCommentId++)
                 comments += newComment
+                break
+            }
+            if (!postFound) {
+                throw PostNotFoundException("Поста с айди $postId не существует")
             }
         }
         return comment
@@ -121,23 +123,32 @@ object WallService {
         if (reason !in 0..8) {
             return false
         }
+        var postFound = false
+        var commentFound = false
+
         for (tempPost in posts) {
             if (tempPost.id == postId) {
-                if (tempPost.comments != null && tempPost.comments.id == comment.id) {
-                    val newReport = Report(postId, comment, reason)
-                    reports += newReport
-                    return true
-                } else {
-                    throw CommentNotFoundException("Комментария с айди ${comment.id} не существует в посте с айди $postId")
+                postFound = true
+                for (tempComment in comments) {
+                    if (tempComment.id == comment.id) {
+                        commentFound = true
+                        val newReport = Report(postId, comment, reason)
+                        reports += newReport
+                        return true
+                    }
                 }
+                break
             }
         }
-        throw PostNotFoundException("Поста с айди $postId не существует")
+        return false
     }
 
     fun clear() {
         posts = emptyArray<Post>()
+        comments = emptyArray<Comment>()
+        reports = emptyArray<Report>()
         nextPostId = 1
+        nextCommentId = 1
     }
 }
 fun main() {

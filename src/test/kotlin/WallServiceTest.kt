@@ -11,24 +11,6 @@ class WallServiceTest {
     @Test
     fun addPostTest() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -45,24 +27,6 @@ class WallServiceTest {
     @Test
     fun updateExistingPostTrue() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -81,24 +45,6 @@ class WallServiceTest {
     @Test
     fun updateExistingPostFalse() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -116,24 +62,6 @@ class WallServiceTest {
     @Test(expected = PostNotFoundException::class)
     fun addCommentToNotExistingPost() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -158,24 +86,6 @@ class WallServiceTest {
     @Test
     fun addCommentToExistingPost() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -197,27 +107,9 @@ class WallServiceTest {
         WallService.createComment(id, newComment)
     }
 
-    @Test(expected = PostNotFoundException::class)
+    @Test
     fun notValidReportByPost() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -238,29 +130,13 @@ class WallServiceTest {
         WallService.add(post)
         WallService.createComment(postId, newComment)
         WallService.reportComment(2, newComment, 8)
+
+        assertEquals(WallService.reportComment(2, newComment, 8), false)
     }
 
     @Test
     fun notValidReportByReason() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -285,27 +161,9 @@ class WallServiceTest {
         assertEquals(WallService.reportComment(postId, newComment, 9), false)
     }
 
-    @Test(expected = CommentNotFoundException::class)
+    @Test
     fun notValidReportByComment() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -315,39 +173,22 @@ class WallServiceTest {
             )
         )
 
-        val commentId = 1
+        val commentId = 2
         val newComment = Comment(
-            id = 2,
+            id = 1,
             can_post = true,
             gropus_can_post = false,
             can_close = false,
             can_open = false
         )
         WallService.add(post)
-        WallService.reportComment(commentId, newComment, 8)
+
+        assertEquals(WallService.reportComment(commentId, newComment, 8), false)
     }
 
     @Test
     fun validReportByComment() {
         val post = Post(
-            id = 1,
-            authorId = 2,
-            authorName = "John Doe",
-            content = "Test",
-            comments = Comment(
-                id = 1,
-                can_post = true,
-                gropus_can_post = false,
-                can_close = false,
-                can_open = false
-            ),
-            likes = Likes(
-                count = 1,
-                user_likes = true,
-                can_like = true,
-                can_publish = true
-            ),
-            published = 2019,
             attachments = listOf(
                 PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
                 VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
