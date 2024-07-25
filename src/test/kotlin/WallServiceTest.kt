@@ -71,7 +71,7 @@ class WallServiceTest {
             )
         )
 
-        val id = 2
+        val id = 3
         val newComment = Comment(
             id = 1,
             can_post = true,

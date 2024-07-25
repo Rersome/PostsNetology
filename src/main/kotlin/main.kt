@@ -104,17 +104,12 @@ object WallService {
     // Реализация очень странная, я так думаю, но ничего умнее не пришло в голову (ДОРАБОТАТЬ)
     fun createComment(postId: Int, comment: Comment): Comment {
         var postFound = false
-
         for (tempPost in posts) {
             if (tempPost.id == postId) {
                 postFound = true
                 val newComment = comment.copy(id = nextCommentId++)
                 comments += newComment
-                break
-            }
-            if (!postFound) {
-                throw PostNotFoundException("Поста с айди $postId не существует")
-            }
+            } else throw PostNotFoundException("Поста с айди $postId не существует")
         }
         return comment
     }
@@ -153,39 +148,25 @@ object WallService {
 }
 fun main() {
     /*val post = Post(
-        id = 1,
-        authorId = 2,
-        authorName = "John Doe",
-        content = "Test",
-        comments = Comment(
-            id = 1,
-            can_post = true,
-            gropus_can_post = false,
-            can_close = false,
-            can_open = false),
-        likes = Likes(
-            count = 1,
-            user_likes = true,
-            can_like = true,
-            can_publish = true
-        ),
-        published = 2019,
         attachments = listOf(
-                PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
-                VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
-                FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
-                AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
-                HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))))
+            PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
+            VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
+            FileAttachment(File(id = 1, ownerId = 1, size = 100, title = "TestFile")),
+            AudioAttachment(Audio(id = 1, ownerId = 1, artist = "TestArtist", title = "TestAlbum")),
+            HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
+        )
+    )
 
-    val id = 1
-    var newComment = Comment(
+    val postId = 1
+    val commentId = 1
+    val newComment = Comment(
         id = 1,
         can_post = true,
         gropus_can_post = false,
         can_close = false,
         can_open = false
-        )
+    )
     WallService.add(post)
-    WallService.createComment(id, newComment)
-    WallService.reportComment(1, newComment, 8)*/
+    WallService.createComment(postId, newComment)
+    WallService.reportComment(commentId, newComment, 8)*/
 }
