@@ -27,7 +27,7 @@ data class Report(
 data class Comment(
     val id: Int = 1,
     val can_post: Boolean = true,
-    val gropus_can_post: Boolean = false,
+    val groups_can_post: Boolean = false,
     val can_close: Boolean = false,
     val can_open: Boolean = false
 )
@@ -109,9 +109,10 @@ object WallService {
                 postFound = true
                 val newComment = comment.copy(id = nextCommentId++)
                 comments += newComment
-            } else throw PostNotFoundException("Поста с айди $postId не существует")
+                return comment
+            }
         }
-        return comment
+        throw PostNotFoundException("Поста с айди $postId не существует")
     }
 
     fun reportComment(postId: Int, comment: Comment, reason: Int): Boolean {
@@ -147,7 +148,7 @@ object WallService {
     }
 }
 fun main() {
-    /*val post = Post(
+    val post = Post(
         attachments = listOf(
             PhotoAttachment(Photo(id = 1, ownerId = 1, date = 1206, userId = 1)),
             VideoAttachment(Video(id = 1, ownerId = 1, duration = 323, title = "TestVideo")),
@@ -157,16 +158,14 @@ fun main() {
         )
     )
 
-    val postId = 1
-    val commentId = 1
+    val id = 3
     val newComment = Comment(
         id = 1,
         can_post = true,
-        gropus_can_post = false,
+        groups_can_post = false,
         can_close = false,
         can_open = false
     )
     WallService.add(post)
-    WallService.createComment(postId, newComment)
-    WallService.reportComment(commentId, newComment, 8)*/
+    WallService.createComment(id, newComment)
 }

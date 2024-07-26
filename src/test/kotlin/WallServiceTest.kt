@@ -75,7 +75,7 @@ class WallServiceTest {
         val newComment = Comment(
             id = 1,
             can_post = true,
-            gropus_can_post = false,
+            groups_can_post = false,
             can_close = false,
             can_open = false
         )
@@ -99,7 +99,7 @@ class WallServiceTest {
         val newComment = Comment(
             id = 1,
             can_post = true,
-            gropus_can_post = false,
+            groups_can_post = false,
             can_close = false,
             can_open = false
         )
@@ -123,7 +123,7 @@ class WallServiceTest {
         val newComment = Comment(
             id = 1,
             can_post = true,
-            gropus_can_post = false,
+            groups_can_post = false,
             can_close = false,
             can_open = false
         )
@@ -151,7 +151,7 @@ class WallServiceTest {
         val newComment = Comment(
             id = 1,
             can_post = true,
-            gropus_can_post = false,
+            groups_can_post = false,
             can_close = false,
             can_open = false
         )
@@ -177,7 +177,7 @@ class WallServiceTest {
         val newComment = Comment(
             id = 1,
             can_post = true,
-            gropus_can_post = false,
+            groups_can_post = false,
             can_close = false,
             can_open = false
         )
@@ -203,7 +203,7 @@ class WallServiceTest {
         val newComment = Comment(
             id = 1,
             can_post = true,
-            gropus_can_post = false,
+            groups_can_post = false,
             can_close = false,
             can_open = false
         )
