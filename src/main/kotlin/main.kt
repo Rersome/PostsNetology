@@ -103,10 +103,8 @@ object WallService {
     }
     // Реализация очень странная, я так думаю, но ничего умнее не пришло в голову (ДОРАБОТАТЬ)
     fun createComment(postId: Int, comment: Comment): Comment {
-        var postFound = false
         for (tempPost in posts) {
             if (tempPost.id == postId) {
-                postFound = true
                 val newComment = comment.copy(id = nextCommentId++)
                 comments += newComment
                 return comment
