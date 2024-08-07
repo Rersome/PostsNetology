@@ -1,11 +1,14 @@
+import Wall.Attachments.*
+import Wall.Exceptions.*
+import Wall.Post.*
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class WallServiceTest {
+class PostWallServiceTest {
     @Before
     fun clearBeforeTest() {
-        WallService.clear()
+        PostWallService.clear()
     }
 
     @Test
@@ -19,7 +22,7 @@ class WallServiceTest {
                 HistoryAttachment(History(id = 1, title = "TestHistory", isExpired = false, expiresAt = 123))
             )
         )
-        val addedPost = WallService.add(post)
+        val addedPost = PostWallService.add(post)
 
         assertEquals(addedPost.id, 1)
     }
@@ -36,10 +39,10 @@ class WallServiceTest {
             )
         )
 
-        WallService.add(post)
+        PostWallService.add(post)
         val addedPost = post.copy(authorName = "Test name")
 
-        assertEquals(WallService.update(addedPost), true)
+        assertEquals(PostWallService.update(addedPost), true)
     }
 
     @Test
@@ -56,7 +59,7 @@ class WallServiceTest {
 
         val addedPost = post.copy(authorName = "Test name")
 
-        assertEquals(WallService.update(addedPost), false)
+        assertEquals(PostWallService.update(addedPost), false)
     }
 
     @Test(expected = PostNotFoundException::class)
@@ -79,8 +82,8 @@ class WallServiceTest {
             can_close = false,
             can_open = false
         )
-        WallService.add(post)
-        WallService.createComment(id, newComment)
+        PostWallService.add(post)
+        PostWallService.createComment(id, newComment)
     }
 
     @Test
@@ -103,8 +106,8 @@ class WallServiceTest {
             can_close = false,
             can_open = false
         )
-        WallService.add(post)
-        WallService.createComment(id, newComment)
+        PostWallService.add(post)
+        PostWallService.createComment(id, newComment)
     }
 
     @Test
@@ -127,11 +130,11 @@ class WallServiceTest {
             can_close = false,
             can_open = false
         )
-        WallService.add(post)
-        WallService.createComment(postId, newComment)
-        WallService.reportComment(2, newComment, 8)
+        PostWallService.add(post)
+        PostWallService.createComment(postId, newComment)
+        PostWallService.reportComment(2, newComment, 8)
 
-        assertEquals(WallService.reportComment(2, newComment, 8), false)
+        assertEquals(PostWallService.reportComment(2, newComment, 8), false)
     }
 
     @Test
@@ -155,10 +158,10 @@ class WallServiceTest {
             can_close = false,
             can_open = false
         )
-        WallService.add(post)
-        WallService.createComment(commentId, newComment)
+        PostWallService.add(post)
+        PostWallService.createComment(commentId, newComment)
 
-        assertEquals(WallService.reportComment(postId, newComment, 9), false)
+        assertEquals(PostWallService.reportComment(postId, newComment, 9), false)
     }
 
     @Test
@@ -181,9 +184,9 @@ class WallServiceTest {
             can_close = false,
             can_open = false
         )
-        WallService.add(post)
+        PostWallService.add(post)
 
-        assertEquals(WallService.reportComment(commentId, newComment, 8), false)
+        assertEquals(PostWallService.reportComment(commentId, newComment, 8), false)
     }
 
     @Test
@@ -207,8 +210,8 @@ class WallServiceTest {
             can_close = false,
             can_open = false
         )
-        WallService.add(post)
-        WallService.createComment(postId, newComment)
-        assertEquals(WallService.reportComment(commentId, newComment, 8), true)
+        PostWallService.add(post)
+        PostWallService.createComment(postId, newComment)
+        assertEquals(PostWallService.reportComment(commentId, newComment, 8), true)
     }
 }
